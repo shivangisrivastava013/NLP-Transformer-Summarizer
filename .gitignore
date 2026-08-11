@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+
+.ipynb_checkpoints
+/data/*
+*.bin
+*.safetensors
+
+.env
+.venv
+env/
+venv/
+
+.DS_Store
+Thumbs.db
