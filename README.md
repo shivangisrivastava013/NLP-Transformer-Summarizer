@@ -4,11 +4,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
 
-Production-grade long-document text summarization, threshold-based neutral sentiment analysis, and quantitative evaluation framework powered by Hugging Face transformers (BART, Flan-T5) and token-aware sliding window chunking.
+An NLP workbench for summarizing long documents and inspecting sentiment. It supports BART and Flan-T5, token-aware chunking, transparent heuristic fallbacks, and reproducible evaluation.
+
+## Demo and project links
+
+- [Portfolio project page](https://shivangisrivastava013.github.io/shivangi-portfolio/#projects)
+- [Streamlit application source](app.py)
+- [Command-line demo](demo.py)
+- [Evaluation results](results/evaluation_results.json)
 
 ---
 
-## 🌟 Key Architecture & Capabilities
+## Architecture and capabilities
 
 1. **Token-Aware Sliding Window Chunker (`TokenAwareChunker`)**:
    - Resolves context window truncation in transformer models by splitting long-form documents into token-budgeted chunks with configurable overlap (e.g. 512 max tokens, 64 overlap tokens).
@@ -31,7 +38,7 @@ Production-grade long-document text summarization, threshold-based neutral senti
 
 ---
 
-## 📊 Empirical Evaluation Results
+## Evaluation results
 
 The evaluation pipeline benchmarked models across sample long-form technical articles (results saved in `results/evaluation_results.json` and `results/model_comparison.csv`):
 
@@ -45,7 +52,7 @@ The evaluation pipeline benchmarked models across sample long-form technical art
 
 ---
 
-## 🛠️ Repository Structure
+## Repository Structure
 
 ```text
 .
@@ -80,7 +87,7 @@ The evaluation pipeline benchmarked models across sample long-form technical art
 
 ---
 
-## 🚀 Quick Start & Usage
+## Getting started
 
 ### 1. Installation
 
@@ -118,7 +125,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 🐳 Docker Container Deployment
+## Docker deployment
 
 Build and run using Docker:
 
@@ -131,6 +138,6 @@ Navigate to `http://localhost:8501` to access the Streamlit workbench interface.
 
 ---
 
-## 📜 License
+## License
 
 This repository is available under the [MIT License](LICENSE).
