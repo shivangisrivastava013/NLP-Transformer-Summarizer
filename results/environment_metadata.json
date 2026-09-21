@@ -1,0 +1,16 @@
+{
+  "python_version": "3.11.3",
+  "system_os": "Windows",
+  "platform_release": "10",
+  "machine_architecture": "AMD64",
+  "timestamp_utc": "2026-09-21T03:24:52Z",
+  "sample_articles_count": 3,
+  "evaluation_metrics_computed": [
+    "ROUGE-1",
+    "ROUGE-2",
+    "ROUGE-L",
+    "BERTScore",
+    "Compression Ratio",
+    "Latency"
+  ]
+}

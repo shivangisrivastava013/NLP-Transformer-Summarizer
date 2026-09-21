@@ -1,10 +1,17 @@
 """
-NLP Transformer Text Summarization & Sentiment Engine
-Author: Shivangi Srivastava (MS in AI @ NJIT)
+NLP Transformer Summarizer Engine & Evaluation Package
 """
 
-__version__ = "1.0.0"
-__author__ = "Shivangi Srivastava"
+from nlp_engine.chunking import TokenAwareChunker
+from nlp_engine.summarizer import AbstractiveSummarizer
+from nlp_engine.sentiment import SentimentAnalyzer
+from nlp_engine.evaluation import SummarizationEvaluator
+from nlp_engine.pipeline import NLPPipeline
 
-from .summarizer import AbstractiveSummarizer
-from .sentiment import SentimentAnalyzer
+__all__ = [
+    "TokenAwareChunker",
+    "AbstractiveSummarizer",
+    "SentimentAnalyzer",
+    "SummarizationEvaluator",
+    "NLPPipeline",
+]

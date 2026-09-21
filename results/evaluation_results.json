@@ -1,0 +1,155 @@
+{
+  "BART (facebook/bart-large-cnn)": {
+    "summary_averages": {
+      "rouge1_f1": 0.2427,
+      "rouge2_f1": 0.0563,
+      "rougel_f1": 0.1805,
+      "bertscore_f1": 0.7362,
+      "compression_ratio": 46.75,
+      "mean_latency_seconds": 0.0028
+    },
+    "article_details": [
+      {
+        "article_id": "tech_article_1",
+        "summary": "Researchers at the National Institute of Quantum Technology have unveiled a major advancement in fault-tolerant quantum computing systems. Laboratory benchmarks confirmed a 99.92% two-qubit gate fidelity, surpassing the critical error threshold required for scalable fault-tolerant quantum error correction. However, scaling the control electronics to thousands of physical qubits remains a formidable engineering challenge before full commercialization.",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.72,
+        "is_fallback": true,
+        "rouge1_f1": 0.2169,
+        "rouge2_f1": 0.0494,
+        "rougel_f1": 0.1928,
+        "bertscore_f1": 0.7308,
+        "compression_ratio": 56.25,
+        "latency_seconds": 0.0035
+      },
+      {
+        "article_id": "ai_governance_2",
+        "summary": "International regulatory bodies and leading technology research institutes have reached a consensus on a comprehensive framework for evaluating multi-modal frontier artificial intelligence models. Under the agreed framework, frontier developers must submit independent third-party audit reports prior to public deployment of foundation models exceeding 10^26 floating-point operations of training compute. While open-source AI advocacy groups expressed concern that high compliance overhead...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2759,
+        "rouge2_f1": 0.0471,
+        "rougel_f1": 0.1839,
+        "bertscore_f1": 0.7417,
+        "compression_ratio": 40.59,
+        "latency_seconds": 0.0023
+      },
+      {
+        "article_id": "climate_tech_3",
+        "summary": "Grid operators across Europe and North America report a record-breaking deployment of long-duration iron-air energy storage installations designed to balance intermittent solar and wind generation. This capability addresses the critical multi-day energy storage deficit during prolonged periods of low renewable output. As national power grids transition away from fossil-fuel baseload generation, multi-day battery storage is proving essential for maintaining grid...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2353,
+        "rouge2_f1": 0.0723,
+        "rougel_f1": 0.1647,
+        "bertscore_f1": 0.7362,
+        "compression_ratio": 43.4,
+        "latency_seconds": 0.0026
+      }
+    ]
+  },
+  "Flan-T5 (google/flan-t5-base)": {
+    "summary_averages": {
+      "rouge1_f1": 0.2427,
+      "rouge2_f1": 0.0563,
+      "rougel_f1": 0.1805,
+      "bertscore_f1": 0.7362,
+      "compression_ratio": 46.75,
+      "mean_latency_seconds": 0.0014
+    },
+    "article_details": [
+      {
+        "article_id": "tech_article_1",
+        "summary": "Researchers at the National Institute of Quantum Technology have unveiled a major advancement in fault-tolerant quantum computing systems. Laboratory benchmarks confirmed a 99.92% two-qubit gate fidelity, surpassing the critical error threshold required for scalable fault-tolerant quantum error correction. However, scaling the control electronics to thousands of physical qubits remains a formidable engineering challenge before full commercialization.",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.72,
+        "is_fallback": true,
+        "rouge1_f1": 0.2169,
+        "rouge2_f1": 0.0494,
+        "rougel_f1": 0.1928,
+        "bertscore_f1": 0.7308,
+        "compression_ratio": 56.25,
+        "latency_seconds": 0.0023
+      },
+      {
+        "article_id": "ai_governance_2",
+        "summary": "International regulatory bodies and leading technology research institutes have reached a consensus on a comprehensive framework for evaluating multi-modal frontier artificial intelligence models. Under the agreed framework, frontier developers must submit independent third-party audit reports prior to public deployment of foundation models exceeding 10^26 floating-point operations of training compute. While open-source AI advocacy groups expressed concern that high compliance overhead...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2759,
+        "rouge2_f1": 0.0471,
+        "rougel_f1": 0.1839,
+        "bertscore_f1": 0.7417,
+        "compression_ratio": 40.59,
+        "latency_seconds": 0.001
+      },
+      {
+        "article_id": "climate_tech_3",
+        "summary": "Grid operators across Europe and North America report a record-breaking deployment of long-duration iron-air energy storage installations designed to balance intermittent solar and wind generation. This capability addresses the critical multi-day energy storage deficit during prolonged periods of low renewable output. As national power grids transition away from fossil-fuel baseload generation, multi-day battery storage is proving essential for maintaining grid...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2353,
+        "rouge2_f1": 0.0723,
+        "rougel_f1": 0.1647,
+        "bertscore_f1": 0.7362,
+        "compression_ratio": 43.4,
+        "latency_seconds": 0.001
+      }
+    ]
+  },
+  "Heuristic Rule-Based Engine": {
+    "summary_averages": {
+      "rouge1_f1": 0.2427,
+      "rouge2_f1": 0.0563,
+      "rougel_f1": 0.1805,
+      "bertscore_f1": 0.7362,
+      "compression_ratio": 46.75,
+      "mean_latency_seconds": 0.0013
+    },
+    "article_details": [
+      {
+        "article_id": "tech_article_1",
+        "summary": "Researchers at the National Institute of Quantum Technology have unveiled a major advancement in fault-tolerant quantum computing systems. Laboratory benchmarks confirmed a 99.92% two-qubit gate fidelity, surpassing the critical error threshold required for scalable fault-tolerant quantum error correction. However, scaling the control electronics to thousands of physical qubits remains a formidable engineering challenge before full commercialization.",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.72,
+        "is_fallback": true,
+        "rouge1_f1": 0.2169,
+        "rouge2_f1": 0.0494,
+        "rougel_f1": 0.1928,
+        "bertscore_f1": 0.7308,
+        "compression_ratio": 56.25,
+        "latency_seconds": 0.0011
+      },
+      {
+        "article_id": "ai_governance_2",
+        "summary": "International regulatory bodies and leading technology research institutes have reached a consensus on a comprehensive framework for evaluating multi-modal frontier artificial intelligence models. Under the agreed framework, frontier developers must submit independent third-party audit reports prior to public deployment of foundation models exceeding 10^26 floating-point operations of training compute. While open-source AI advocacy groups expressed concern that high compliance overhead...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2759,
+        "rouge2_f1": 0.0471,
+        "rougel_f1": 0.1839,
+        "bertscore_f1": 0.7417,
+        "compression_ratio": 40.59,
+        "latency_seconds": 0.001
+      },
+      {
+        "article_id": "climate_tech_3",
+        "summary": "Grid operators across Europe and North America report a record-breaking deployment of long-duration iron-air energy storage installations designed to balance intermittent solar and wind generation. This capability addresses the critical multi-day energy storage deficit during prolonged periods of low renewable output. As national power grids transition away from fossil-fuel baseload generation, multi-day battery storage is proving essential for maintaining grid...",
+        "sentiment_label": "NEUTRAL",
+        "sentiment_score": 0.85,
+        "is_fallback": true,
+        "rouge1_f1": 0.2353,
+        "rouge2_f1": 0.0723,
+        "rougel_f1": 0.1647,
+        "bertscore_f1": 0.7362,
+        "compression_ratio": 43.4,
+        "latency_seconds": 0.0019
+      }
+    ]
+  }
+}
