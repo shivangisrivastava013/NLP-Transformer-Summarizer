@@ -1,7 +1,11 @@
+import logging
 import re
-from typing import List, Optional
-from nlp_engine.schemas import SummarizationResult, TextChunk
+from typing import Optional
+
 from nlp_engine.chunking import TokenAwareChunker
+from nlp_engine.schemas import SummarizationResult, TextChunk
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractiveSummarizer:
@@ -14,17 +18,26 @@ class AbstractiveSummarizer:
         self.device = device
         self.pipeline = None
         self.tokenizer = None
+        self.fallback_reason: Optional[str] = None
         self._init_pipeline()
-        self.chunker = TokenAwareChunker(tokenizer=self.tokenizer, max_tokens=512, overlap_tokens=64)
 
     def _init_pipeline(self):
-        try:
-            from transformers import pipeline, AutoTokenizer
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-            self.pipeline = pipeline("summarization", model=self.model_name, device=self.device)
-        except Exception:
+        if self.model_name == "rule-based-fallback":
             self.pipeline = None
             self.tokenizer = None
+            self.fallback_reason = "Explicit rule-based heuristic fallback selected by user configuration"
+            return
+
+        try:
+            from transformers import AutoTokenizer, pipeline
+
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            self.pipeline = pipeline("summarization", model=self.model_name, device=self.device)
+        except Exception as err:
+            self.pipeline = None
+            self.tokenizer = None
+            self.fallback_reason = f"Transformers initialization error ({type(err).__name__}): {err}"
+            logger.warning("Failed to initialize Hugging Face summarization pipeline: %s", err)
 
     def _fallback_summary(self, text: str, max_words: int = 60) -> str:
         """
@@ -32,12 +45,11 @@ class AbstractiveSummarizer:
         """
         sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if len(s.strip()) > 10]
         if not sentences:
-            return text[:max_words * 6]
+            return text[: max_words * 6]
 
         if len(sentences) <= 2:
             return " ".join(sentences)
 
-        # Select first sentence, highest sentence with numerical/action content, and last sentence
         selected = [sentences[0]]
         mid = len(sentences) // 2
         if mid > 0 and mid < len(sentences) - 1:
@@ -65,7 +77,9 @@ class AbstractiveSummarizer:
                     truncation=True,
                 )
                 return out[0]["summary_text"]
-            except Exception:
+            except Exception as err:
+                self.fallback_reason = f"Pipeline execution error ({type(err).__name__}): {err}"
+                logger.warning("Summarization pipeline inference failed, using heuristic fallback: %s", err)
                 return self._fallback_summary(chunk_text)
         else:
             return self._fallback_summary(chunk_text)
@@ -76,6 +90,8 @@ class AbstractiveSummarizer:
         max_length: int = 130,
         min_length: int = 30,
         hierarchical: bool = True,
+        max_chunk_tokens: int = 512,
+        overlap_tokens: int = 64,
     ) -> SummarizationResult:
         clean_text = text.strip()
         if not clean_text:
@@ -87,10 +103,16 @@ class AbstractiveSummarizer:
                 compression_ratio=0.0,
                 model_name=self.model_name,
                 is_fallback=(self.pipeline is None),
+                fallback_reason=self.fallback_reason,
             )
 
-        chunks: List[TextChunk] = self.chunker.chunk_text(clean_text)
-        chunk_summaries: List[str] = []
+        chunker = TokenAwareChunker(
+            tokenizer=self.tokenizer,
+            max_tokens=max_chunk_tokens,
+            overlap_tokens=overlap_tokens,
+        )
+        chunks: list[TextChunk] = chunker.chunk_text(clean_text)
+        chunk_summaries: list[str] = []
 
         for chunk in chunks:
             summary_part = self.summarize_chunk(chunk.text, max_length=max_length, min_length=min_length)
@@ -107,8 +129,8 @@ class AbstractiveSummarizer:
                 min_length=min_length,
             )
 
-        input_tokens = self.chunker.count_tokens(clean_text)
-        summary_tokens = self.chunker.count_tokens(final_summary)
+        input_tokens = chunker.count_tokens(clean_text)
+        summary_tokens = chunker.count_tokens(final_summary)
         compression = round((1.0 - (summary_tokens / max(input_tokens, 1))) * 100, 2)
 
         return SummarizationResult(
@@ -119,4 +141,5 @@ class AbstractiveSummarizer:
             compression_ratio=compression,
             model_name=self.model_name,
             is_fallback=(self.pipeline is None),
+            fallback_reason=self.fallback_reason,
         )

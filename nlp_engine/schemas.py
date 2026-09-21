@@ -1,5 +1,6 @@
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
+from dataclasses import dataclass
+from typing import Optional
+
 
 @dataclass
 class TextChunk:
@@ -9,23 +10,29 @@ class TextChunk:
     start_char: int
     end_char: int
 
+
 @dataclass
 class SummarizationResult:
     summary_text: str
-    chunk_summaries: List[str]
+    chunk_summaries: list[str]
     input_token_count: int
     summary_token_count: int
     compression_ratio: float
     model_name: str
     is_fallback: bool = False
+    fallback_reason: Optional[str] = None
+
 
 @dataclass
 class SentimentResult:
     label: str  # POSITIVE, NEGATIVE, NEUTRAL
-    score: float
-    scores_breakdown: Dict[str, float]
+    score: Optional[float]
+    scores_breakdown: dict[str, float]
     model_name: str
     is_fallback: bool = False
+    is_heuristic: bool = False
+    fallback_reason: Optional[str] = None
+
 
 @dataclass
 class EvaluationMetrics:
@@ -41,6 +48,7 @@ class EvaluationMetrics:
     bertscore_f1: Optional[float]
     compression_ratio: float
     latency_seconds: float
+
 
 @dataclass
 class PipelineResult:

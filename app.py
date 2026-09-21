@@ -1,13 +1,13 @@
 import os
 import sys
-import json
+
 import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from nlp_engine.pipeline import NLPPipeline
 from nlp_engine.chunking import TokenAwareChunker
+from nlp_engine.pipeline import NLPPipeline
 
 st.set_page_config(
     page_title="NLP Transformer Summarizer & Sentiment Workbench",
@@ -18,7 +18,7 @@ st.set_page_config(
 st.title("📝 NLP Transformer Summarizer & Sentiment Workbench")
 st.markdown(
     "Long-document summarization engine featuring **Token-Aware Sliding-Window Chunking**, "
-    "**Hierarchical BART / Flan-T5 Architecture**, **3-Class Calibrated Sentiment Analysis**, "
+    "**Hierarchical BART / Flan-T5 Architecture**, **Threshold-Based Neutral Sentiment Classification**, "
     "and **Quantitative ROUGE & BERTScore Evaluation**."
 )
 
@@ -27,13 +27,13 @@ st.sidebar.header("⚙️ Pipeline Configuration")
 
 model_option = st.sidebar.selectbox(
     "Summarization Model",
-    ["BART (facebook/bart-large-cnn)", "Flan-T5 (google/flan-t5-base)", "Heuristic Fallback"],
+    ["BART (facebook/bart-large-cnn)", "Flan-T5 (google/flan-t5-base)", "Heuristic Fallback Baseline"],
 )
 
 model_map = {
     "BART (facebook/bart-large-cnn)": "facebook/bart-large-cnn",
     "Flan-T5 (google/flan-t5-base)": "google/flan-t5-base",
-    "Heuristic Fallback": "rule-based-fallback",
+    "Heuristic Fallback Baseline": "rule-based-fallback",
 }
 
 chunk_size = st.sidebar.slider("Max Chunk Tokens", min_value=128, max_value=1024, value=512, step=64)
@@ -77,14 +77,24 @@ if st.button("🚀 Run Pipeline", type="primary"):
                 reference_summary=ref_summary,
                 max_length=max_len,
                 min_length=min_len,
+                max_chunk_tokens=chunk_size,
+                overlap_tokens=overlap_size,
             )
 
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "📊 Summary & Sentiment",
-            "🧩 Token Chunk Inspector",
-            "📈 Evaluation Workbench",
-            "📁 Committed Benchmarks",
-        ])
+        if res.summary.is_fallback:
+            st.warning(f"⚠️ **Summarizer Running in Fallback Mode**: {res.summary.fallback_reason}")
+
+        if res.sentiment.is_fallback:
+            st.info(f"ℹ️ **Sentiment Analyzer Running in Heuristic Mode**: {res.sentiment.fallback_reason}")
+
+        tab1, tab2, tab3, tab4 = st.tabs(
+            [
+                "📊 Summary & Sentiment",
+                "🧩 Token Chunk Inspector",
+                "📈 Evaluation Workbench",
+                "📁 Committed Benchmarks",
+            ]
+        )
 
         with tab1:
             col1, col2, col3 = st.columns(3)
@@ -95,9 +105,10 @@ if st.button("🚀 Run Pipeline", type="primary"):
             st.markdown("### 📝 Generated Summary")
             st.info(res.summary.summary_text)
 
-            st.markdown("### 🎭 Sentiment Analysis")
-            badge_color = "green" if res.sentiment.label == "POSITIVE" else ("red" if res.sentiment.label == "NEGATIVE" else "orange")
-            st.markdown(f"**Predicted Label**: `{res.sentiment.label}` (Confidence: `{res.sentiment.score}`)")
+            st.markdown("### 🎭 Sentiment Classification")
+            score_disp = f"{res.sentiment.score}" if res.sentiment.score is not None else "N/A (Heuristic)"
+            heur_note = " (Heuristic ratio, not probability)" if res.sentiment.is_heuristic else ""
+            st.markdown(f"**Predicted Label**: `{res.sentiment.label}` | **Confidence**: `{score_disp}`{heur_note}")
 
             if res.sentiment.scores_breakdown:
                 st.write("Score Breakdown:", res.sentiment.scores_breakdown)
@@ -106,7 +117,9 @@ if st.button("🚀 Run Pipeline", type="primary"):
             st.markdown("### 🧩 Token-Aware Sliding Window Chunks")
             chunker = TokenAwareChunker(max_tokens=chunk_size, overlap_tokens=overlap_size)
             chunks = chunker.chunk_text(input_text)
-            st.write(f"Total Chunks Generated: **{len(chunks)}**")
+            st.write(
+                f"Total Chunks Generated (Max `{chunk_size}` tokens, Overlap `{overlap_size}` tokens): **{len(chunks)}**"
+            )
 
             for i, c in enumerate(chunks):
                 with st.expander(f"Chunk {i+1} ({c.token_count} tokens, chars {c.start_char}-{c.end_char})"):

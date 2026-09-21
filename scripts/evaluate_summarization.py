@@ -1,16 +1,16 @@
-import os
-import sys
 import json
-import time
+import os
 import platform
+import sys
+import time
+from typing import Any
+
 import pandas as pd
-from typing import List, Dict, Any
 
 # Ensure project root is in python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from nlp_engine.pipeline import NLPPipeline
-from nlp_engine.evaluation import SummarizationEvaluator
 
 SAMPLE_ARTICLES = [
     {
@@ -73,9 +73,21 @@ def run_evaluation():
     os.makedirs(output_dir, exist_ok=True)
 
     models_to_test = [
-        {"name": "BART (facebook/bart-large-cnn)", "summarizer": "facebook/bart-large-cnn", "sentiment": "distilbert-base-uncased-finetuned-sst-2-english"},
-        {"name": "Flan-T5 (google/flan-t5-base)", "summarizer": "google/flan-t5-base", "sentiment": "distilbert-base-uncased-finetuned-sst-2-english"},
-        {"name": "Heuristic Rule-Based Engine", "summarizer": "rule-based-fallback", "sentiment": "rule-based-fallback"},
+        {
+            "name": "BART (facebook/bart-large-cnn)",
+            "summarizer": "facebook/bart-large-cnn",
+            "sentiment": "distilbert-base-uncased-finetuned-sst-2-english",
+        },
+        {
+            "name": "Flan-T5 (google/flan-t5-base)",
+            "summarizer": "google/flan-t5-base",
+            "sentiment": "distilbert-base-uncased-finetuned-sst-2-english",
+        },
+        {
+            "name": "Heuristic Rule-Based Baseline",
+            "summarizer": "rule-based-fallback",
+            "sentiment": "rule-based-fallback",
+        },
     ]
 
     all_results = {}
@@ -84,14 +96,15 @@ def run_evaluation():
     print("Starting Quantitative Evaluation of NLP Summarizer & Sentiment Engine...")
 
     for model_cfg in models_to_test:
-        model_key = model_cfg["name"]
-        print(f"\nEvaluating pipeline model: {model_key}")
+        raw_key = model_cfg["name"]
+        print(f"\nEvaluating pipeline model: {raw_key}")
         pipeline = NLPPipeline(
             summarizer_model=model_cfg["summarizer"],
             sentiment_model=model_cfg["sentiment"],
         )
 
-        article_metrics: List[Dict[str, Any]] = []
+        article_metrics: list[dict[str, Any]] = []
+        is_fallback_run = False
 
         for article in SAMPLE_ARTICLES:
             t0 = time.time()
@@ -104,32 +117,44 @@ def run_evaluation():
             t1 = time.time()
             lat = t1 - t0
 
+            if res.summary.is_fallback:
+                is_fallback_run = True
+
             eval_m = res.evaluation
 
-            article_metrics.append({
-                "article_id": article["id"],
-                "summary": res.summary.summary_text,
-                "sentiment_label": res.sentiment.label,
-                "sentiment_score": res.sentiment.score,
-                "is_fallback": res.summary.is_fallback,
-                "rouge1_f1": eval_m.rouge1_f1 if eval_m else 0.0,
-                "rouge2_f1": eval_m.rouge2_f1 if eval_m else 0.0,
-                "rougel_f1": eval_m.rougel_f1 if eval_m else 0.0,
-                "bertscore_f1": eval_m.bertscore_f1 if eval_m else 0.0,
-                "compression_ratio": eval_m.compression_ratio if eval_m else 0.0,
-                "latency_seconds": round(lat, 4),
-            })
+            article_metrics.append(
+                {
+                    "article_id": article["id"],
+                    "summary": res.summary.summary_text,
+                    "sentiment_label": res.sentiment.label,
+                    "sentiment_score": res.sentiment.score,
+                    "is_fallback": res.summary.is_fallback,
+                    "fallback_reason": res.summary.fallback_reason,
+                    "rouge1_f1": eval_m.rouge1_f1 if eval_m else 0.0,
+                    "rouge2_f1": eval_m.rouge2_f1 if eval_m else 0.0,
+                    "rougel_f1": eval_m.rougel_f1 if eval_m else 0.0,
+                    "bertscore_f1": eval_m.bertscore_f1 if eval_m else 0.0,
+                    "compression_ratio": eval_m.compression_ratio if eval_m else 0.0,
+                    "latency_seconds": round(lat, 4),
+                }
+            )
 
-            csv_rows.append({
-                "model": model_key,
-                "article_id": article["id"],
-                "rouge1_f1": eval_m.rouge1_f1 if eval_m else 0.0,
-                "rouge2_f1": eval_m.rouge2_f1 if eval_m else 0.0,
-                "rougel_f1": eval_m.rougel_f1 if eval_m else 0.0,
-                "bertscore_f1": eval_m.bertscore_f1 if eval_m else 0.0,
-                "compression_ratio": eval_m.compression_ratio if eval_m else 0.0,
-                "latency_seconds": round(lat, 4),
-            })
+        display_name = f"{raw_key} (Heuristic Fallback)" if is_fallback_run and "Baseline" not in raw_key else raw_key
+
+        for am in article_metrics:
+            csv_rows.append(
+                {
+                    "model": display_name,
+                    "article_id": am["article_id"],
+                    "is_fallback": am["is_fallback"],
+                    "rouge1_f1": am["rouge1_f1"],
+                    "rouge2_f1": am["rouge2_f1"],
+                    "rougel_f1": am["rougel_f1"],
+                    "bertscore_f1": am["bertscore_f1"],
+                    "compression_ratio": am["compression_ratio"],
+                    "latency_seconds": am["latency_seconds"],
+                }
+            )
 
         avg_r1 = round(sum(m["rouge1_f1"] for m in article_metrics) / len(article_metrics), 4)
         avg_r2 = round(sum(m["rouge2_f1"] for m in article_metrics) / len(article_metrics), 4)
@@ -138,7 +163,8 @@ def run_evaluation():
         avg_comp = round(sum(m["compression_ratio"] for m in article_metrics) / len(article_metrics), 2)
         avg_lat = round(sum(m["latency_seconds"] for m in article_metrics) / len(article_metrics), 4)
 
-        all_results[model_key] = {
+        all_results[display_name] = {
+            "is_fallback_execution": is_fallback_run,
             "summary_averages": {
                 "rouge1_f1": avg_r1,
                 "rouge2_f1": avg_r2,

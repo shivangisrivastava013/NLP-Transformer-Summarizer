@@ -1,4 +1,3 @@
-import pytest
 from nlp_engine.evaluation import SummarizationEvaluator
 
 

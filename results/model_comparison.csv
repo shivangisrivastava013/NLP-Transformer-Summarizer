@@ -1,10 +1,10 @@
-model,article_id,rouge1_f1,rouge2_f1,rougel_f1,bertscore_f1,compression_ratio,latency_seconds
-BART (facebook/bart-large-cnn),tech_article_1,0.2169,0.0494,0.1928,0.7308,56.25,0.0035
-BART (facebook/bart-large-cnn),ai_governance_2,0.2759,0.0471,0.1839,0.7417,40.59,0.0023
-BART (facebook/bart-large-cnn),climate_tech_3,0.2353,0.0723,0.1647,0.7362,43.4,0.0026
-Flan-T5 (google/flan-t5-base),tech_article_1,0.2169,0.0494,0.1928,0.7308,56.25,0.0023
-Flan-T5 (google/flan-t5-base),ai_governance_2,0.2759,0.0471,0.1839,0.7417,40.59,0.001
-Flan-T5 (google/flan-t5-base),climate_tech_3,0.2353,0.0723,0.1647,0.7362,43.4,0.001
-Heuristic Rule-Based Engine,tech_article_1,0.2169,0.0494,0.1928,0.7308,56.25,0.0011
-Heuristic Rule-Based Engine,ai_governance_2,0.2759,0.0471,0.1839,0.7417,40.59,0.001
-Heuristic Rule-Based Engine,climate_tech_3,0.2353,0.0723,0.1647,0.7362,43.4,0.0019
+model,article_id,is_fallback,rouge1_f1,rouge2_f1,rougel_f1,bertscore_f1,compression_ratio,latency_seconds
+BART (facebook/bart-large-cnn) (Heuristic Fallback),tech_article_1,True,0.2169,0.0494,0.1928,0.7308,56.25,0.0016
+BART (facebook/bart-large-cnn) (Heuristic Fallback),ai_governance_2,True,0.2759,0.0471,0.1839,0.7417,40.59,0.0012
+BART (facebook/bart-large-cnn) (Heuristic Fallback),climate_tech_3,True,0.2353,0.0723,0.1647,0.7362,43.4,0.0012
+Flan-T5 (google/flan-t5-base) (Heuristic Fallback),tech_article_1,True,0.2169,0.0494,0.1928,0.7308,56.25,0.0011
+Flan-T5 (google/flan-t5-base) (Heuristic Fallback),ai_governance_2,True,0.2759,0.0471,0.1839,0.7417,40.59,0.0012
+Flan-T5 (google/flan-t5-base) (Heuristic Fallback),climate_tech_3,True,0.2353,0.0723,0.1647,0.7362,43.4,0.0012
+Heuristic Rule-Based Baseline,tech_article_1,True,0.2169,0.0494,0.1928,0.7308,56.25,0.0006
+Heuristic Rule-Based Baseline,ai_governance_2,True,0.2759,0.0471,0.1839,0.7417,40.59,0.001
+Heuristic Rule-Based Baseline,climate_tech_3,True,0.2353,0.0723,0.1647,0.7362,43.4,0.0011

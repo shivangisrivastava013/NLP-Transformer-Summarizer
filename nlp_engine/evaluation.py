@@ -1,7 +1,8 @@
-import time
-import math
-from typing import Dict, Any, List, Optional
+import logging
+
 from nlp_engine.schemas import EvaluationMetrics
+
+logger = logging.getLogger(__name__)
 
 
 class SummarizationEvaluator:
@@ -16,18 +17,22 @@ class SummarizationEvaluator:
     def _init_rouge(self):
         try:
             from rouge_score import rouge_scorer
-            self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
-        except Exception:
+
+            self.rouge_scorer = rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)
+        except Exception as err:
+            logger.debug("rouge_score library not available, using fallback ngram scorer: %s", err)
             self.rouge_scorer = None
 
-    def _get_ngrams(self, tokens: List[str], n: int) -> Dict[str, int]:
+    def _get_ngrams(self, tokens: list[str], n: int) -> dict[str, int]:
         ngrams = {}
         for i in range(len(tokens) - n + 1):
-            ngram = " ".join(tokens[i:i + n])
+            ngram = " ".join(tokens[i : i + n])
             ngrams[ngram] = ngrams.get(ngram, 0) + 1
         return ngrams
 
-    def _compute_ngram_metrics(self, candidate_tokens: List[str], reference_tokens: List[str], n: int) -> Dict[str, float]:
+    def _compute_ngram_metrics(
+        self, candidate_tokens: list[str], reference_tokens: list[str], n: int
+    ) -> dict[str, float]:
         cand_ngrams = self._get_ngrams(candidate_tokens, n)
         ref_ngrams = self._get_ngrams(reference_tokens, n)
 
@@ -48,7 +53,7 @@ class SummarizationEvaluator:
 
         return {"precision": round(prec, 4), "recall": round(rec, 4), "f1": round(f1, 4)}
 
-    def _lcs_length(self, x: List[str], y: List[str]) -> int:
+    def _lcs_length(self, x: list[str], y: list[str]) -> int:
         m, n = len(x), len(y)
         dp = [[0] * (n + 1) for _ in range(m + 1)]
         for i in range(1, m + 1):
@@ -59,7 +64,7 @@ class SummarizationEvaluator:
                     dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
         return dp[m][n]
 
-    def _compute_rougel_fallback(self, cand_tokens: List[str], ref_tokens: List[str]) -> Dict[str, float]:
+    def _compute_rougel_fallback(self, cand_tokens: list[str], ref_tokens: list[str]) -> dict[str, float]:
         if not cand_tokens or not ref_tokens:
             return {"precision": 0.0, "recall": 0.0, "f1": 0.0}
 
@@ -80,7 +85,7 @@ class SummarizationEvaluator:
         intersection = cand_words.intersection(ref_words)
         union = cand_words.union(ref_words)
         jaccard = len(intersection) / len(union) if union else 0.0
-        # Map Jaccard similarity to typical BERTScore scale [0.75, 0.95]
+        # Map Jaccard similarity to typical BERTScore scale [0.70, 0.95]
         return round(0.70 + 0.25 * jaccard, 4)
 
     def evaluate(
@@ -96,9 +101,9 @@ class SummarizationEvaluator:
 
         if self.rouge_scorer is not None:
             scores = self.rouge_scorer.score(ref_clean, cand_clean)
-            r1 = scores['rouge1']
-            r2 = scores['rouge2']
-            rl = scores['rougeL']
+            r1 = scores["rouge1"]
+            r2 = scores["rouge2"]
+            rl = scores["rougeL"]
             r1_m = {"precision": round(r1.precision, 4), "recall": round(r1.recall, 4), "f1": round(r1.fmeasure, 4)}
             r2_m = {"precision": round(r2.precision, 4), "recall": round(r2.recall, 4), "f1": round(r2.fmeasure, 4)}
             rl_m = {"precision": round(rl.precision, 4), "recall": round(rl.recall, 4), "f1": round(rl.fmeasure, 4)}
@@ -113,9 +118,11 @@ class SummarizationEvaluator:
         bertscore_val = None
         try:
             from bert_score import score as bert_score_fn
-            P, R, F1 = bert_score_fn([cand_clean], [ref_clean], lang="en", verbose=False)
+
+            _P, _R, F1 = bert_score_fn([cand_clean], [ref_clean], lang="en", verbose=False)
             bertscore_val = round(float(F1[0]), 4)
-        except Exception:
+        except Exception as err:
+            logger.debug("bert_score calculation fallback: %s", err)
             bertscore_val = self.compute_bertscore_fallback(cand_clean, ref_clean)
 
         # Calculate Compression Ratio

@@ -1,6 +1,9 @@
+import logging
 import re
-from typing import List, Optional
+
 from nlp_engine.schemas import TextChunk
+
+logger = logging.getLogger(__name__)
 
 
 class TokenAwareChunker:
@@ -19,12 +22,12 @@ class TokenAwareChunker:
         if self.tokenizer is not None:
             try:
                 return len(self.tokenizer.encode(text, add_special_tokens=False))
-            except Exception:
-                pass
+            except Exception as err:
+                logger.debug("Tokenizer encoding error, using whitespace fallback: %s", err)
         # Fallback whitespace word-based estimation
         return len(text.split())
 
-    def chunk_text(self, text: str) -> List[TextChunk]:
+    def chunk_text(self, text: str) -> list[TextChunk]:
         """
         Splits text into sliding window chunks respecting maximum token limits and sentence boundaries.
         """
@@ -49,8 +52,8 @@ class TokenAwareChunker:
         if not sentences:
             sentences = [clean_text]
 
-        chunks: List[TextChunk] = []
-        current_sentences: List[str] = []
+        chunks: list[TextChunk] = []
+        current_sentences: list[str] = []
         current_tokens = 0
         chunk_idx = 0
         start_char = 0
@@ -104,7 +107,7 @@ class TokenAwareChunker:
                 start_char += len(c_text) + 1
 
                 # Calculate overlap sentences
-                overlap_buf: List[str] = []
+                overlap_buf: list[str] = []
                 overlap_count = 0
                 for s in reversed(current_sentences):
                     st = self.count_tokens(s)

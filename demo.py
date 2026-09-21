@@ -1,21 +1,21 @@
-import sys
 import os
-import json
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from nlp_engine.pipeline import NLPPipeline
 
 SAMPLE_TEXT = """
-Artificial Intelligence and machine learning engineering have transitioned from isolated experimental research 
-into foundational enterprise software infrastructure. Modern industrial applications demand robust, token-aware 
-architectures capable of processing long-form documents without context truncation or silent memory overflow. 
-By integrating sliding window chunking with pre-trained transformer models such as BART and Flan-T5, system 
-architects achieve high compression ratios while preserving critical factual entities and semantic nuance. 
-Furthermore, combining abstractive text summarization with calibrated three-class sentiment analysis and 
-reproducible ROUGE evaluation pipelines provides verifiable benchmarks for deploying production-grade 
+Artificial Intelligence and machine learning engineering have transitioned from isolated experimental research
+into foundational enterprise software infrastructure. Modern industrial applications demand robust, token-aware
+architectures capable of processing long-form documents without context truncation or silent memory overflow.
+By integrating sliding window chunking with pre-trained transformer models such as BART and Flan-T5, system
+architects achieve high compression ratios while preserving critical factual entities and semantic nuance.
+Furthermore, combining abstractive text summarization with calibrated three-class sentiment analysis and
+reproducible ROUGE evaluation pipelines provides verifiable benchmarks for deploying production-grade
 Generative AI solutions across finance, healthcare, and software engineering domains.
 """
+
 
 def main():
     print("==================================================================")
@@ -42,7 +42,9 @@ def main():
     print(result.summary.summary_text)
 
     print(f"\nSentiment Label: {result.sentiment.label} (Score: {result.sentiment.score})")
-    print(f"Input Tokens: {result.summary.input_token_count} | Summary Tokens: {result.summary.summary_token_count} | Compression: {result.summary.compression_ratio}%")
+    print(
+        f"Input Tokens: {result.summary.input_token_count} | Summary Tokens: {result.summary.summary_token_count} | Compression: {result.summary.compression_ratio}%"
+    )
 
     if result.evaluation:
         print("\nQuantitative Evaluation Metrics:")
@@ -53,6 +55,7 @@ def main():
         print(f"  • Latency: {result.evaluation.latency_seconds}s")
 
     print("\n==================================================================")
+
 
 if __name__ == "__main__":
     main()

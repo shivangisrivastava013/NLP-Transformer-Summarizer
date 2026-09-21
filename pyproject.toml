@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nlp-transformer-summarizer"
 version = "2.0.0"
-description = "Long-Document Transformer Summarization & Calibrated Sentiment Analysis Workbench"
+description = "Long-Document Transformer Summarization & Sentiment Workbench"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -28,6 +28,10 @@ dev = [
 [tool.ruff]
 line-length = 120
 target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
 
 [tool.black]
 line-length = 120

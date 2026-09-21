@@ -1,9 +1,10 @@
 import time
 from typing import Optional
-from nlp_engine.schemas import PipelineResult
-from nlp_engine.summarizer import AbstractiveSummarizer
-from nlp_engine.sentiment import SentimentAnalyzer
+
 from nlp_engine.evaluation import SummarizationEvaluator
+from nlp_engine.schemas import PipelineResult
+from nlp_engine.sentiment import SentimentAnalyzer
+from nlp_engine.summarizer import AbstractiveSummarizer
 
 
 class NLPPipeline:
@@ -27,9 +28,17 @@ class NLPPipeline:
         reference_summary: Optional[str] = None,
         max_length: int = 130,
         min_length: int = 30,
+        max_chunk_tokens: int = 512,
+        overlap_tokens: int = 64,
     ) -> PipelineResult:
         t0 = time.time()
-        summary_res = self.summarizer.summarize(text, max_length=max_length, min_length=min_length)
+        summary_res = self.summarizer.summarize(
+            text,
+            max_length=max_length,
+            min_length=min_length,
+            max_chunk_tokens=max_chunk_tokens,
+            overlap_tokens=overlap_tokens,
+        )
         t1 = time.time()
 
         sentiment_res = self.sentiment_analyzer.analyze(summary_res.summary_text or text)
