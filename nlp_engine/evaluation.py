@@ -116,6 +116,7 @@ class SummarizationEvaluator:
 
         # Calculate BERTScore
         bertscore_val = None
+        is_bertscore_fallback = False
         try:
             from bert_score import score as bert_score_fn
 
@@ -124,6 +125,7 @@ class SummarizationEvaluator:
         except Exception as err:
             logger.debug("bert_score calculation fallback: %s", err)
             bertscore_val = self.compute_bertscore_fallback(cand_clean, ref_clean)
+            is_bertscore_fallback = True
 
         # Calculate Compression Ratio
         src_words = len(src_clean.split())
@@ -141,6 +143,7 @@ class SummarizationEvaluator:
             rougel_precision=rl_m["precision"],
             rougel_recall=rl_m["recall"],
             bertscore_f1=bertscore_val,
+            is_bertscore_fallback=is_bertscore_fallback,
             compression_ratio=comp_ratio,
             latency_seconds=round(latency_seconds, 4),
         )

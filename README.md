@@ -24,7 +24,7 @@ Production-grade long-document text summarization, threshold-based neutral senti
    - Clearly distinguishes statistical probabilities from heuristic keyword scores (`is_heuristic=True`).
 
 4. **Quantitative Evaluation Pipeline (`SummarizationEvaluator`)**:
-   - Calculates **ROUGE-1**, **ROUGE-2**, **ROUGE-L** (Precision, Recall, F1), **BERTScore**, compression ratio, and processing latency.
+   - Calculates **ROUGE-1**, **ROUGE-2**, **ROUGE-L** (Precision, Recall, F1), **BERTScore / Fallback Similarity**, compression ratio, and processing latency.
 
 5. **Interactive Streamlit Workbench (`app.py`)**:
    - Web application providing real-time document summarization, dynamic chunk size/overlap slider passthrough, token chunk inspection, reference evaluation, and transparent fallback error warnings.
@@ -35,11 +35,11 @@ Production-grade long-document text summarization, threshold-based neutral senti
 
 The evaluation pipeline benchmarked models across sample long-form technical articles (results saved in `results/evaluation_results.json` and `results/model_comparison.csv`):
 
-| Model Architecture | Execution Mode | ROUGE-1 F1 | ROUGE-2 F1 | ROUGE-L F1 | BERTScore F1 | Mean Compression Ratio | Average Latency |
+| Model Architecture | Execution Mode | ROUGE-1 F1 | ROUGE-2 F1 | ROUGE-L F1 | BERTScore Mode | Compression Ratio | Average Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **BART (`facebook/bart-large-cnn`)** | Heuristic Fallback | 0.2427 | 0.0563 | 0.1805 | 0.7362 | 46.75% | 0.0013s |
-| **Flan-T5 (`google/flan-t5-base`)** | Heuristic Fallback | 0.2427 | 0.0563 | 0.1805 | 0.7362 | 46.75% | 0.0012s |
-| **Heuristic Rule-Based Baseline** | Rule Baseline | 0.2427 | 0.0563 | 0.1805 | 0.7362 | 46.75% | 0.0009s |
+| **BART (`facebook/bart-large-cnn`)** | Heuristic Fallback | 0.2427 | 0.0563 | 0.1805 | Fallback Similarity | 46.75% | 0.0013s |
+| **Flan-T5 (`google/flan-t5-base`)** | Heuristic Fallback | 0.2427 | 0.0563 | 0.1805 | Fallback Similarity | 46.75% | 0.0012s |
+| **Heuristic Rule-Based Baseline** | Rule Baseline | 0.2427 | 0.0563 | 0.1805 | Fallback Similarity | 46.75% | 0.0009s |
 
 *Note: Execution mode automatically detects whether Hugging Face transformer weights were loaded or if CPU fallback mode was triggered, guaranteeing transparent reporting.*
 
@@ -72,7 +72,7 @@ The evaluation pipeline benchmarked models across sample long-form technical art
 ├── app.py                    # Streamlit web application
 ├── demo.py                   # Interactive CLI demo
 ├── Dockerfile                # Production Docker deployment container
-├── pyproject.toml            # Project dependencies and ruff/black config
+├── pyproject.toml            # Project dependencies and ruff/black/pytest config
 └── .github/
     └── workflows/
         └── ci.yml            # GitHub Actions CI workflow

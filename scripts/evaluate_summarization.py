@@ -105,6 +105,7 @@ def run_evaluation():
 
         article_metrics: list[dict[str, Any]] = []
         is_fallback_run = False
+        is_bertscore_fallback_run = False
 
         for article in SAMPLE_ARTICLES:
             t0 = time.time()
@@ -121,6 +122,8 @@ def run_evaluation():
                 is_fallback_run = True
 
             eval_m = res.evaluation
+            if eval_m and eval_m.is_bertscore_fallback:
+                is_bertscore_fallback_run = True
 
             article_metrics.append(
                 {
@@ -134,6 +137,7 @@ def run_evaluation():
                     "rouge2_f1": eval_m.rouge2_f1 if eval_m else 0.0,
                     "rougel_f1": eval_m.rougel_f1 if eval_m else 0.0,
                     "bertscore_f1": eval_m.bertscore_f1 if eval_m else 0.0,
+                    "is_bertscore_fallback": eval_m.is_bertscore_fallback if eval_m else False,
                     "compression_ratio": eval_m.compression_ratio if eval_m else 0.0,
                     "latency_seconds": round(lat, 4),
                 }
@@ -151,6 +155,7 @@ def run_evaluation():
                     "rouge2_f1": am["rouge2_f1"],
                     "rougel_f1": am["rougel_f1"],
                     "bertscore_f1": am["bertscore_f1"],
+                    "bertscore_mode": "Fallback Similarity" if am["is_bertscore_fallback"] else "BERTScore Transformer",
                     "compression_ratio": am["compression_ratio"],
                     "latency_seconds": am["latency_seconds"],
                 }
@@ -165,11 +170,13 @@ def run_evaluation():
 
         all_results[display_name] = {
             "is_fallback_execution": is_fallback_run,
+            "is_bertscore_fallback_execution": is_bertscore_fallback_run,
             "summary_averages": {
                 "rouge1_f1": avg_r1,
                 "rouge2_f1": avg_r2,
                 "rougel_f1": avg_rl,
                 "bertscore_f1": avg_bert,
+                "bertscore_mode": "Fallback Similarity" if is_bertscore_fallback_run else "BERTScore Transformer",
                 "compression_ratio": avg_comp,
                 "mean_latency_seconds": avg_lat,
             },
@@ -196,7 +203,14 @@ def run_evaluation():
         "machine_architecture": platform.machine(),
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "sample_articles_count": len(SAMPLE_ARTICLES),
-        "evaluation_metrics_computed": ["ROUGE-1", "ROUGE-2", "ROUGE-L", "BERTScore", "Compression Ratio", "Latency"],
+        "evaluation_metrics_computed": [
+            "ROUGE-1",
+            "ROUGE-2",
+            "ROUGE-L",
+            "BERTScore Fallback Similarity",
+            "Compression Ratio",
+            "Latency",
+        ],
     }
     env_meta_path = os.path.join(output_dir, "environment_metadata.json")
     with open(env_meta_path, "w", encoding="utf-8") as f:

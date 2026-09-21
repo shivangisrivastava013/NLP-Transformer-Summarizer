@@ -3,13 +3,13 @@
   "system_os": "Windows",
   "platform_release": "10",
   "machine_architecture": "AMD64",
-  "timestamp_utc": "2026-09-21T03:36:42Z",
+  "timestamp_utc": "2026-09-21T03:43:10Z",
   "sample_articles_count": 3,
   "evaluation_metrics_computed": [
     "ROUGE-1",
     "ROUGE-2",
     "ROUGE-L",
-    "BERTScore",
+    "BERTScore Fallback Similarity",
     "Compression Ratio",
     "Latency"
   ]

@@ -1,13 +1,15 @@
 {
   "BART (facebook/bart-large-cnn) (Heuristic Fallback)": {
     "is_fallback_execution": true,
+    "is_bertscore_fallback_execution": true,
     "summary_averages": {
       "rouge1_f1": 0.2427,
       "rouge2_f1": 0.0563,
       "rougel_f1": 0.1805,
       "bertscore_f1": 0.7362,
+      "bertscore_mode": "Fallback Similarity",
       "compression_ratio": 46.75,
-      "mean_latency_seconds": 0.0013
+      "mean_latency_seconds": 0.0042
     },
     "article_details": [
       {
@@ -21,8 +23,9 @@
         "rouge2_f1": 0.0494,
         "rougel_f1": 0.1928,
         "bertscore_f1": 0.7308,
+        "is_bertscore_fallback": true,
         "compression_ratio": 56.25,
-        "latency_seconds": 0.0016
+        "latency_seconds": 0.0083
       },
       {
         "article_id": "ai_governance_2",
@@ -35,8 +38,9 @@
         "rouge2_f1": 0.0471,
         "rougel_f1": 0.1839,
         "bertscore_f1": 0.7417,
+        "is_bertscore_fallback": true,
         "compression_ratio": 40.59,
-        "latency_seconds": 0.0012
+        "latency_seconds": 0.0043
       },
       {
         "article_id": "climate_tech_3",
@@ -49,20 +53,23 @@
         "rouge2_f1": 0.0723,
         "rougel_f1": 0.1647,
         "bertscore_f1": 0.7362,
+        "is_bertscore_fallback": true,
         "compression_ratio": 43.4,
-        "latency_seconds": 0.0012
+        "latency_seconds": 0.0
       }
     ]
   },
   "Flan-T5 (google/flan-t5-base) (Heuristic Fallback)": {
     "is_fallback_execution": true,
+    "is_bertscore_fallback_execution": true,
     "summary_averages": {
       "rouge1_f1": 0.2427,
       "rouge2_f1": 0.0563,
       "rougel_f1": 0.1805,
       "bertscore_f1": 0.7362,
+      "bertscore_mode": "Fallback Similarity",
       "compression_ratio": 46.75,
-      "mean_latency_seconds": 0.0012
+      "mean_latency_seconds": 0.0019
     },
     "article_details": [
       {
@@ -76,8 +83,9 @@
         "rouge2_f1": 0.0494,
         "rougel_f1": 0.1928,
         "bertscore_f1": 0.7308,
+        "is_bertscore_fallback": true,
         "compression_ratio": 56.25,
-        "latency_seconds": 0.0011
+        "latency_seconds": 0.0023
       },
       {
         "article_id": "ai_governance_2",
@@ -90,8 +98,9 @@
         "rouge2_f1": 0.0471,
         "rougel_f1": 0.1839,
         "bertscore_f1": 0.7417,
+        "is_bertscore_fallback": true,
         "compression_ratio": 40.59,
-        "latency_seconds": 0.0012
+        "latency_seconds": 0.0017
       },
       {
         "article_id": "climate_tech_3",
@@ -104,20 +113,23 @@
         "rouge2_f1": 0.0723,
         "rougel_f1": 0.1647,
         "bertscore_f1": 0.7362,
+        "is_bertscore_fallback": true,
         "compression_ratio": 43.4,
-        "latency_seconds": 0.0012
+        "latency_seconds": 0.0016
       }
     ]
   },
   "Heuristic Rule-Based Baseline": {
     "is_fallback_execution": true,
+    "is_bertscore_fallback_execution": true,
     "summary_averages": {
       "rouge1_f1": 0.2427,
       "rouge2_f1": 0.0563,
       "rougel_f1": 0.1805,
       "bertscore_f1": 0.7362,
+      "bertscore_mode": "Fallback Similarity",
       "compression_ratio": 46.75,
-      "mean_latency_seconds": 0.0009
+      "mean_latency_seconds": 0.0016
     },
     "article_details": [
       {
@@ -131,8 +143,9 @@
         "rouge2_f1": 0.0494,
         "rougel_f1": 0.1928,
         "bertscore_f1": 0.7308,
+        "is_bertscore_fallback": true,
         "compression_ratio": 56.25,
-        "latency_seconds": 0.0006
+        "latency_seconds": 0.0017
       },
       {
         "article_id": "ai_governance_2",
@@ -145,8 +158,9 @@
         "rouge2_f1": 0.0471,
         "rougel_f1": 0.1839,
         "bertscore_f1": 0.7417,
+        "is_bertscore_fallback": true,
         "compression_ratio": 40.59,
-        "latency_seconds": 0.001
+        "latency_seconds": 0.0025
       },
       {
         "article_id": "climate_tech_3",
@@ -159,8 +173,9 @@
         "rouge2_f1": 0.0723,
         "rougel_f1": 0.1647,
         "bertscore_f1": 0.7362,
+        "is_bertscore_fallback": true,
         "compression_ratio": 43.4,
-        "latency_seconds": 0.0011
+        "latency_seconds": 0.0006
       }
     ]
   }

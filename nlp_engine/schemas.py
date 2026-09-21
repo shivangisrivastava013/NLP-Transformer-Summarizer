@@ -48,6 +48,7 @@ class EvaluationMetrics:
     bertscore_f1: Optional[float]
     compression_ratio: float
     latency_seconds: float
+    is_bertscore_fallback: bool = False
 
 
 @dataclass
